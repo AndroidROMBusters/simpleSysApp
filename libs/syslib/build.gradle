@@ -1,0 +1,40 @@
+version = coreVersion
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${gradlePluginVersion}"
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion androidTargetSdkVersion
+
+        versionName androidVersion
+        versionCode androidVersionCode
+    }
+
+    buildTypes {
+        release {}
+    }
+
+    publishNonDefault true
+}
+
+dependencies {
+    compile "com.google.android.gms:play-services-analytics:${gmsVersion}"
+}
+

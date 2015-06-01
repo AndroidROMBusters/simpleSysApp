@@ -1,0 +1,73 @@
+buildscript {
+    ext {
+        gradlePluginVersion = "1.2.3"
+    }
+
+    repositories {
+        jcenter()
+        maven { url "http://maven.scm.corp.inmobi.com/content/repositories/public/"}
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${gradlePluginVersion}"
+    }
+
+}
+
+plugins {
+    id 'net.researchgate.release' version '2.1.0'
+}
+
+apply plugin: 'net.researchgate.release'
+apply plugin: 'maven'
+
+
+ext {
+    coreVersion = extractVersion(project.properties["version"], false)
+
+    androidVersion = extractVersion(project.properties["version"], true)
+    androidVersionCode = extractVersionCode(project.properties["version"])
+    androidMinSdkVersion = 17
+    androidTargetSdkVersion = 21
+    androidCompileSdkVersion = 22
+    androidBuildToolsVersion = "22.0.1"
+
+    gmsVersion = "7.0.0"
+
+    println("coreVersion = " + coreVersion + ", androidVersion = " + androidVersion + ", androidVersionCode = " + androidVersionCode)
+}
+
+allprojects {
+    group = "org.androidrombusters.sample.systemapp"
+    version = coreVersion
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+def extractVersion(v, android) {
+    def isSnapshot = v.endsWith("-SNAPSHOT")
+    v = v.replaceAll("-SNAPSHOT", "")
+    def(major, minor, build) = v.tokenize(".")
+
+    def result = major + "." + minor + "." + build
+    if (android) {
+        def commitId = "git rev-parse --short HEAD".execute().text.trim()
+        result += "." + commitId
+    }
+    if (isSnapshot) {
+             result += "-SNAPSHOT"
+    }
+    return result
+}
+
+def extractVersionCode(v) {
+    def isSnapshot = v.endsWith("-SNAPSHOT")
+    v = v.replaceAll("-SNAPSHOT", "")
+    def(major, minor, build) = v.tokenize(".")
+    def code = major.toInteger() * 10000 + minor.toInteger() * 100 + build.toInteger()
+    def commitCount = "git rev-list HEAD --count".execute().text.trim().toInteger()
+    code = code * 10000 + commitCount
+    return code
+}
