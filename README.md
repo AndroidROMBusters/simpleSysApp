@@ -1,2 +1,2 @@
-# simpleSysapp
+# simpleSysApp
 Simple System App
