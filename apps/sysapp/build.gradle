@@ -26,6 +26,10 @@ android {
         versionCode androidVersionCode
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     signingConfigs {
         release {}
     }
